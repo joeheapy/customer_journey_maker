@@ -17,8 +17,7 @@ app = Flask(__name__, template_folder=template_dir)
 # OpenAI client setup
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Global variables
-# source_prompt = "Do not hyphenate words.Do not use semicolons.1. Define journey steps: As a product manager, redesign the customer experience for 'target_customers' interested in your 'business_proposition' products and services. List the steps in the 'customer_mission', from awareness of the company to ending the customer relationship. Include ongoing relationship management. Now rewrite the steps to define a world class experience for your customers. Name this set of steps {{journey_steps}}."
+
 
 def get_chatgpt_response(prompt):
     response = client.chat.completions.create(
@@ -44,6 +43,8 @@ def generate():
     customer_scenario = request.form['customer_scenario']
     persona_name = request.form['persona_name']
 
+    # Main ChatGPT prompt
+
     input_prompt = f"Do not hyphenate words. Do not use semicolons. Write a customer journey story in steps. As a world-class customer experience designer, redesign an innovative customer journey for an {target_customers} named {persona_name} interested in your {business_proposition} products and services. Write the narraive steps for {persona_name} when they {customer_scenario}, from awareness of the company to leaving your service and ongoing relationship management. Name this set of steps {{journey_steps}}."
 
     chatgpt_response = get_chatgpt_response(input_prompt)
@@ -55,8 +56,8 @@ def generate():
     return jsonify(journey_steps)
 
 if __name__ == '__main__':
-    #app.run()
+    app.run()
     # This is used when running locally only. When deploying to Google Cloud Run,
     # a webserver process such as Gunicorn will serve the app.
-    port = int(os.environ.get("PORT", 8080))
-    app.run(debug=False, host='0.0.0.0', port=port)
+    #port = int(os.environ.get("PORT", 8080))
+    #app.run(debug=False, host='0.0.0.0', port=port)
