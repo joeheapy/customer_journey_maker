@@ -44,7 +44,7 @@ def generate():
     customer_scenario = request.form['customer_scenario']
     persona_name = request.form['persona_name']
 
-    input_prompt = f"Define journey steps: As a global expert in customer experience design, redesign a world-class and innovative customer journey for a {target_customers} named {persona_name} interested in your {business_proposition} products and services. List the service steps in the scenario of {customer_scenario}, from awareness of the company to ending the customer relationship. Include ongoing relationship management. Name this set of steps {{journey_steps}}."
+    input_prompt = f"Do not hyphenate words. Do not use semicolons. Write a customer journey story in steps. As a world-class customer experience designer, redesign an innovative customer journey for an {target_customers} named {persona_name} interested in your {business_proposition} products and services. Write the narraive steps for {persona_name} when they {customer_scenario}, from awareness of the company to leaving your service and ongoing relationship management. Name this set of steps {{journey_steps}}."
 
     chatgpt_response = get_chatgpt_response(input_prompt)
 
