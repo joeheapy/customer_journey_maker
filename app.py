@@ -18,7 +18,7 @@ app = Flask(__name__, template_folder=template_dir)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Global variables
-source_prompt = "Do not hyphenate words.Do not use semicolons.1. Define journey steps: As a product manager, redesign the customer experience for 'target_customers' interested in your 'business_proposition' products and services. List the steps in the 'customer_mission', from awareness of the company to ending the customer relationship. Include ongoing relationship management. Now rewrite the steps to define a world class experience for your customers. Name this set of steps {{journey_steps}}."
+# source_prompt = "Do not hyphenate words.Do not use semicolons.1. Define journey steps: As a product manager, redesign the customer experience for 'target_customers' interested in your 'business_proposition' products and services. List the steps in the 'customer_mission', from awareness of the company to ending the customer relationship. Include ongoing relationship management. Now rewrite the steps to define a world class experience for your customers. Name this set of steps {{journey_steps}}."
 
 def get_chatgpt_response(prompt):
     response = client.chat.completions.create(
@@ -44,7 +44,7 @@ def generate():
     customer_scenario = request.form['customer_scenario']
     persona_name = request.form['persona_name']
 
-    input_prompt = f"{source_prompt} I am a Customer Experience Manager for {business_proposition}. My service targets {target_customers}. I need define the customer journey steps for our service, from initial awareness to post-purchase support, ongoing relationships and leaving, ensuring that each stage is detailed and customer-centric. I want to define the journey for customers {customer_scenario}. The persona name for this journey is {persona_name}."
+    input_prompt = f"Define journey steps: As a global expert in customer experience design, redesign a world-class and innovative customer journey for a {target_customers} named {persona_name} interested in your {business_proposition} products and services. List the service steps in the scenario of {customer_scenario}, from awareness of the company to ending the customer relationship. Include ongoing relationship management. Name this set of steps {{journey_steps}}."
 
     chatgpt_response = get_chatgpt_response(input_prompt)
 
@@ -55,8 +55,8 @@ def generate():
     return jsonify(journey_steps)
 
 if __name__ == '__main__':
-    app.run()
+    #app.run()
     # This is used when running locally only. When deploying to Google Cloud Run,
     # a webserver process such as Gunicorn will serve the app.
-    #port = int(os.environ.get("PORT", 8080))
-    #app.run(debug=False, host='0.0.0.0', port=port)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(debug=False, host='0.0.0.0', port=port)
