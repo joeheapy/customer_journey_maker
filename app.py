@@ -44,7 +44,7 @@ def generate():
     customer_scenario = request.form['customer_scenario']
     persona_name = request.form['persona_name']
 
-    input_prompt = f"{source_prompt} I am a Customer Experience Manager for {business_proposition}—my service targets {target_customers}. I need to outline the customer journey steps for our service, from initial awareness to post-purchase support, ongoing relationships and leaving, ensuring that each stage is detailed and customer-centric. I want to define the journey for customers {customer_scenario}. The persona name for this journey is {persona_name}."
+    input_prompt = f"{source_prompt} I am a Customer Experience Manager for {business_proposition}. My service targets {target_customers}. I need define the customer journey steps for our service, from initial awareness to post-purchase support, ongoing relationships and leaving, ensuring that each stage is detailed and customer-centric. I want to define the journey for customers {customer_scenario}. The persona name for this journey is {persona_name}."
 
     chatgpt_response = get_chatgpt_response(input_prompt)
 
