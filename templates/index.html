@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Journey Planner</title>
+    <!-- jQuery library for handling AJAX requests -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
+        /* Basic styling for the body */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
             background-color: #f5f5f7;
@@ -16,19 +18,22 @@
             margin: 0;
             padding: 0;
         }
+        /* Container styling for centering content */
         .container {
             max-width: 980px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 20px 20px;
         }
+        /* Header styling */
         h1 {
-            font-size: 48px;
+            font-size: 32px;
             line-height: 1.08349;
             font-weight: 600;
             letter-spacing: -.003em;
-            margin-bottom: 20px; /* Changed from 40px to 20px */
+            margin-bottom: 16px; /* Changed from 40px to 20px */
             text-align: center;
         }
+        /* Form styling */
         form {
             background-color: #ffffff;
             border-radius: 18px;
@@ -38,15 +43,18 @@
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
+        /* Form group styling for input fields */
         .form-group {
             display: flex;
             flex-direction: column;
         }
+        /* Label styling */
         label {
             margin-bottom: 4px;
             font-weight: 600;
             font-size: 14px;
         }
+        /* Input text styling */
         input[type="text"] {
             width: 100%;
             padding: 8px;
@@ -57,6 +65,7 @@
             box-sizing: border-box;
             transition: border-color 0.3s ease;
         }
+        /* Submit button styling */
         input[type="submit"] {
             background-color: #0071e3;
             color: #ffffff;
@@ -68,12 +77,14 @@
             transition: background-color 0.3s ease;
             grid-column: 1 / -1;
             justify-self: center;
-            margin-top: 20px;
+            margin-top: 10px; /* Reduced from 20px to 10px */
             width: 200px;
         }
+        /* Submit button hover effect */
         input[type="submit"]:hover {
             background-color: #0077ed;
         }
+        /* Progress bar container styling */
         .progress-container {
             width: 100%;
             background-color: #f1f1f1;
@@ -82,6 +93,7 @@
             overflow: hidden;
             display: none;
         }
+        /* Progress bar styling */
         .progress-bar {
             width: 0%;
             height: 8px;
@@ -89,11 +101,13 @@
             transition: width 0.5s ease;
             animation: progress-animation 2s infinite ease-in-out;
         }
+        /* Keyframes for progress bar animation */
         @keyframes progress-animation {
             0% { width: 0%; }
             50% { width: 50%; }
             100% { width: 100%; }
         }
+        /* Table section styling for displaying results */
         .table-section {
             width: 100vw;
             margin-left: calc(-50vw + 50%);
@@ -102,11 +116,13 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-top: 40px;
         }
+        /* Table styling */
         table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0;
+            border-spacing: 0 8px; /* Space between columns. If two are specified, the first gives the horizontal spacing and the second the vertical spacing. */
         }
+        /* Table header and cell styling */
         th, td {
             padding: 16px;
             text-align: left;
@@ -115,6 +131,7 @@
             min-width: 200px;
             box-sizing: border-box;
         }
+        /* Table header styling */
         th {
             background-color: #f5f5f7;
             font-weight: 600;
@@ -125,10 +142,12 @@
             top: 0;
             z-index: 1;
         }
+        /* Table cell styling */
         td {
-            font-size: 17px;
+            font-size: 12px;
             line-height: 1.47059;
         }
+        /* Remove border from last row */
         tr:last-child td {
             border-bottom: none;
         }
@@ -137,31 +156,34 @@
 <body>
     <div class="container">
         <h1>Customer Journey Maker</h1>
+        <!-- Form for inputting customer journey details -->
         <form id="journeyForm">
             <div class="form-group">
                 <label for="business_proposition">Business Proposition:</label>
-                <input type="text" id="business_proposition" name="business_proposition" required>
+                <input type="text" id="business_proposition" name="business_proposition" required value="Roadside recovery services">
             </div>
             <div class="form-group">
                 <label for="target_customers">Target Customers:</label>
-                <input type="text" id="target_customers" name="target_customers" required>
+                <input type="text" id="target_customers" name="target_customers" required value="Motorists with electric vehicles">
             </div>
             <div class="form-group">
                 <label for="customer_scenario">Customer Scenario:</label>
-                <input type="text" id="customer_scenario" name="customer_scenario" required>
+                <input type="text" id="customer_scenario" name="customer_scenario" required value="Motorist breaks down on the highway">
             </div>
             <div class="form-group">
                 <label for="persona_name">Persona Name:</label>
-                <input type="text" id="persona_name" name="persona_name" required>
+                <input type="text" id="persona_name" name="persona_name" required value="John">
             </div>
             <input type="submit" value="Generate journey">
         </form>
 
+        <!-- Progress bar shown during AJAX request -->
         <div class="progress-container">
             <div class="progress-bar"></div>
         </div>
     </div>
 
+    <!-- Table to display generated journey -->
     <div class="table-section">
         <table id="journeyTable" style="display: none;">
             <thead>
@@ -175,25 +197,49 @@
 
     <script>
         $(document).ready(function() {
-            $('#journeyForm').submit(function(e) {
-                e.preventDefault();
-                $('.progress-container').show();
-                $('#journeyTable').hide();
+            // Function to escape HTML characters
+            function escapeHtml(text) {
+                return text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
 
+            // Handle form submission
+            $('#journeyForm').submit(function(e) {
+                e.preventDefault(); // Prevent default form submission
+
+                // Disable the submit button and change its label
+                const submitButton = $('input[type="submit"]');
+                submitButton.prop('disabled', true).val('Making...');
+
+                $('.progress-container').show(); // Show progress bar
+                $('#journeyTable').hide(); // Hide table initially
+
+                // AJAX request to generate journey
                 $.ajax({
                     url: '/generate',
                     method: 'POST',
                     data: $(this).serialize(),
                     success: function(response) {
-                        $('.progress-container').hide();
+                        $('.progress-container').hide(); // Hide progress bar on success
 
+                        // Clear previous table data
                         $('#headerRow').empty();
                         $('#descriptionRow').empty();
+
+                        // Populate table with new data
                         response.forEach(function(step, index) {
-                            $('#headerRow').append(`<th>${step[0]}</th>`);
-                            $('#descriptionRow').append(`<td>${step[1].replace(/\n/g, '<br>')}</td>`);
+                            // Remove '*' character from the response
+                            const title = escapeHtml(step[0].replace(/\*/g, ''));
+                            const description = escapeHtml(step[1].replace(/\*/g, ''));
+
+                            $('#headerRow').append(`<th>${title}</th>`);
+                            $('#descriptionRow').append(`<td>${description}</td>`);
                         });
-                        $('#journeyTable').show();
+                        $('#journeyTable').show(); // Show table
 
                         // Adjust table width if necessary
                         var tableWidth = $('#headerRow th').length * 100;
@@ -202,10 +248,16 @@
                         } else {
                             $('#journeyTable').width('100%');
                         }
+
+                        // Re-enable the submit button and reset its label
+                        submitButton.prop('disabled', false).val('Generate journey');
                     },
                     error: function() {
-                        $('.progress-container').hide();
+                        $('.progress-container').hide(); // Hide progress bar on error
                         alert('An error occurred while generating the journey. Please try again.');
+
+                        // Re-enable the submit button and reset its label
+                        submitButton.prop('disabled', false).val('Generate journey');
                     }
                 });
             });
